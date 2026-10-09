@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>FutureGallery — investigate</title>
+<style>
+  :root {
+    --bg: #0c0b0a;
+    --ink: #f4efe6;
+    --muted: #b7ab9c;
+    --line: rgba(244,239,230,.16);
+    --accent: #e7ff4a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: Georgia, serif; }
+  body { max-width: 430px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; padding: 18px 18px 10px; }
+  header small { display: block; letter-spacing: .18em; text-transform: uppercase; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 10px; color: var(--muted); }
+  header strong { font-weight: 500; font-size: 22px; }
+  .count { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; }
+  main { flex: 1; overflow: auto; padding: 8px 18px 110px; }
+  .piece { position: relative; margin: 22px 0 46px; }
+  .art {
+    width: 100%; aspect-ratio: 4/5; border-radius: 6px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), transparent 28%), linear-gradient(160deg, #2a241c, #12100e 55%, #3a2a22);
+    box-shadow: 0 18px 40px rgba(0,0,0,.35);
+    display: flex; align-items: flex-end; padding: 16px;
+  }
+  .art span { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .piece h2 { margin: 12px 0 0; font-size: 22px; font-weight: 500; }
+  .piece p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  .add {
+    position: absolute; right: 8px; bottom: -10px; transform: translateY(100%);
+    appearance: none; border: 0; cursor: pointer;
+    background: var(--accent); color: #16160c;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 13px; font-weight: 650;
+    padding: 10px 14px; border-radius: 999px;
+    box-shadow: 0 8px 18px rgba(0,0,0,.28);
+  }
+  .add[aria-pressed="true"] { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .tray {
+    position: sticky; bottom: 0; margin-top: auto;
+    background: rgba(12,11,10,.92); border-top: 1px solid var(--line);
+    padding: 12px 16px calc(14px + env(safe-area-inset-bottom));
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .tray b { font-family: ui-sans-serif, system-ui, sans-serif; font-weight: 600; font-size: 14px; }
+  .tray span { display: block; color: var(--muted); font-size: 12px; font-family: ui-sans-serif, system-ui, sans-serif; }
+  .review { border: 0; background: var(--ink); color: #16160c; border-radius: 999px; padding: 10px 14px; font-family: ui-sans-serif, system-ui, sans-serif; font-weight: 650; }
+</style>
+</head>
+<body>
+  <header>
+    <div><small>FutureGallery</small><strong>Neon Equinox</strong></div>
+    <div class="count" id="count">0 to investigate</div>
+  </header>
+  <main id="list"></main>
+  <div class="tray">
+    <div><b>Items to investigate</b><span id="names">Nothing added yet</span></div>
+    <button class="review" type="button">Review</button>
+  </div>
+<script>
+  const works = [["01", "Salt Lattice", "A. Voss · 2024"], ["02", "Low Tide Index", "M. Chen · 2023"], ["03", "Room Without Weather", "S. Okonkwo · 2025"]];
+  const picked = new Set();
+  const list = document.getElementById("list");
+  function render() {
+    list.innerHTML = works.map(([n, title, by]) => `
+      <article class="piece">
+        <div class="art"><span>Work ${n}</span></div>
+        <h2>${title}</h2>
+        <p>${by}</p>
+        <button class="add" type="button" data-title="${title}" aria-pressed="${picked.has(title)}">${picked.has(title) ? "Added" : "Investigate"}</button>
+      </article>`).join("");
+    document.getElementById("count").textContent = `${picked.size} to investigate`;
+    document.getElementById("names").textContent = picked.size ? [...picked].join(" · ") : "Nothing added yet";
+  }
+  list.addEventListener("click", (e) => {
+    const btn = e.target.closest(".add");
+    if (!btn) return;
+    const title = btn.dataset.title;
+    picked.has(title) ? picked.delete(title) : picked.add(title);
+    render();
+  });
+  render();
+</script>
+</body>
+</html>
