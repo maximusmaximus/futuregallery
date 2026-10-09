@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FutureGallery — Live view</title>
+<style>
+  :root { --bg: #12110f; --panel: #1b1916; --ink: #f3eee6; --muted: #a89c8e; --line: rgba(243,238,230,.12); --accent: #e7ff4a; --good: #b6f27c; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: ui-sans-serif, system-ui, sans-serif; }
+  body { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  aside { border-right: 1px solid var(--line); padding: 22px 16px; }
+  aside small { letter-spacing: .16em; text-transform: uppercase; color: var(--muted); font-size: 10px; }
+  aside h1 { font-family: Georgia, serif; font-weight: 500; font-size: 22px; margin: 8px 0 22px; }
+  nav button { width: 100%; text-align: left; background: transparent; color: var(--ink); border: 0; border-radius: 10px; padding: 10px 12px; font: inherit; cursor: pointer; }
+  nav button.active { background: #2a261f; }
+  nav button span { display: inline-block; width: 8px; height: 8px; border-radius: 99px; background: var(--accent); margin-right: 8px; }
+  main { padding: 22px 28px 40px; }
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; }
+  .top h2 { font-family: Georgia, serif; font-weight: 500; font-size: 34px; margin: 0; }
+  .top p { margin: 6px 0 0; color: var(--muted); }
+  .pair { background: var(--accent); color: #16160c; border: 0; border-radius: 999px; padding: 10px 14px; font-weight: 700; cursor: pointer; }
+  .stats { display: flex; gap: 10px; margin: 18px 0; }
+  .stats div { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; min-width: 120px; }
+  .stats b { display: block; font-size: 20px; }
+  .stats span { color: var(--muted); font-size: 12px; }
+  .layout { display: grid; grid-template-columns: 1.4fr .8fr; gap: 16px; }
+  .feed, .pairbox { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  .row { display: grid; grid-template-columns: 92px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .row time { color: var(--muted); font-size: 12px; }
+  .row b { font-weight: 650; }
+  .row em { font-style: normal; color: var(--good); }
+  .who { color: var(--muted); font-size: 13px; }
+  .pairbox code { display: block; font-size: 32px; letter-spacing: .2em; margin: 12px 0; }
+  .pairbox p { color: var(--muted); line-height: 1.45; }
+</style>
+</head>
+<body>
+  <aside>
+    <small>Desktop · admin</small>
+    <h1>Neon Equinox</h1>
+    <nav>
+      <button type="button">Details</button>
+      <button type="button" class="active"><span></span>Live view</button>
+      <button type="button">Works</button>
+      <button type="button">Spreadsheet</button>
+    </nav>
+  </aside>
+  <main>
+    <div class="top">
+      <div>
+        <h2>Live view</h2>
+        <p>Paired desktop for this show. Visitors stay on their phones.</p>
+      </div>
+      <button class="pair" type="button">Pair a screen</button>
+    </div>
+    <div class="stats">
+      <div><b>6</b><span>in the room</span></div>
+      <div><b>14</b><span>looking now</span></div>
+      <div><b>3</b><span>comments today</span></div>
+    </div>
+    <div class="layout">
+      <section class="feed" id="feed"></section>
+      <section class="pairbox">
+        <b>Paired screen</b>
+        <code>NE-481</code>
+        <p>Open FutureGallery on the desktop, sign in as admin, and enter this code on the show. The screen follows this show only.</p>
+        <p>Receiving live events</p>
+      </section>
+    </div>
+  </main>
+<script>
+  const events = [
+    ["7:28:02", "A. Voss", "looked at", "Salt Lattice", "4s on the overlay"],
+    ["7:28:09", "M. Chen", "checked", "Low Tide Index", "added to investigate"],
+    ["7:28:16", "S. Okonkwo", "commented", "Room Without Weather", "signed in with Google"],
+    ["7:28:21", "Guest", "opened review", "2 works", "grid, first item magnified"],
+    ["7:28:33", "J. Patel", "marked interest", "Salt Lattice", "for sale, price shown"],
+    ["7:28:41", "Guest", "camera failed", "entry", "permission denied, admin notified"]
+  ];
+  document.getElementById("feed").innerHTML = events.map(([t, who, did, what, why]) => `<div class="row"><time>${t}</time><div><b>${who}</b> <em>${did}</em> ${what}<div class="who">${why}</div></div></div>`).join("");
+</script>
+</body>
+</html>
