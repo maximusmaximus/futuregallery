@@ -1,44 +1,53 @@
 # FutureGallery
 
-Unattended gallery mobile web app. A visitor scans an entry code, signs in with Google or X, then points their camera at works in the room. Recognized objects get overlays with extra information. An admin enrolls each work with multiple scans until a completeness threshold is met, then attaches content and publishes the exhibit as public or private.
+Unattended gallery, as a web app. A visitor scans a QR, the camera opens, and recognized works show extra information. They can check pieces to investigate and review them. An admin enrolls the works, publishes the show, and can watch what people do from a paired desktop.
+
+This is a web application only. No app store build in this pass.
 
 Public repository: https://github.com/maximusmaximus/futuregallery
 
-This repo is a design home. Product decisions are open. See [docs/QUESTIONS.md](docs/QUESTIONS.md) (50 questions). Implementation starts after those answers.
+Decisions: [docs/DECISIONS.md](docs/DECISIONS.md). Live desktop: [docs/LIVE.md](docs/LIVE.md).
 
-## What is already specified
+## What a visitor should expect
 
-- Mobile web, not a native app.
-- Entry by scanning a code, which registers the visitor to scan objects in the room.
-- Camera view with overlays for additional information about a recognized object.
-- Unattended gallery: no staff required on the floor.
-- Sign-in with Google or X. An admin signs in first and sets parameters.
-- Admin walks the room, isolates an object from the background, and defines it with several images and angles.
-- A threshold tells the admin when the object is not yet clearly defined.
-- A database stores reference images, embeddings, and content so later scans can recall the object for viewing or management.
-- Visitors can check multiple works while using the camera and review the selection.
-- Admin creates exhibits and updates a banner that is the main slug for the show.
-- Admin chooses public or private.
-- Public shows need a clear, creative presentation of each artwork.
+- You scan the show QR and land in a live camera, with short instructions. The first visit adds a simple walkthrough while the camera is already up.
+- The camera asks for permission only after the code is accepted. If you deny it, this path stops. There is no catalog fallback.
+- A bad or expired code tells you to contact the admin. It does not open a blank camera.
+- Point the phone at a work. A clear match can show an overlay. A weak match does not open by itself. Dark or blurry frames ask you to move closer or add light.
+- Under each recognized work, bottom right and slightly below the piece, a checkbox goes from grey to green. That adds it to your items to investigate. Tap again to remove it. A short haptic plays when the phone supports it.
+- After one or more checks, you can open review. Review is a grid in the order you added them. The first item is magnified, with the art, dimensions, cost, availability, and comments.
+- Comments need Google or X sign-in. Sign-in is a sheet over the camera. The buttons say Google and X.
+- Audio plays only if you tap it. It never starts on its own.
+- You can browse a public show without an account. Saving the list, commenting, reading comments, or buying requires sign-in. Your name and email go to that show’s Google Drive spreadsheet.
+- The list survives locking the phone. It holds up to 24 pieces, then asks you to review before adding more. Closing review returns you to the camera with the list intact.
+- If sign-in fails, it retries once, then asks you to notify the admin.
+- Share links include the visible show and its comments. The preview image is the main piece.
+- Text you already opened can be read offline. Recognizing a work needs a network.
 
-## Working assumptions (not decisions)
+## What an admin should expect
 
-These are placeholders so the repo has a shape. Every one is questioned in `docs/QUESTIONS.md`.
+- You sign in with Google or X and create the show. You set the banner, which is required to publish, and choose public or private. The banner title is the slug.
+- You walk the room, isolate a work from the background, and define it with several images and angles. The app tells you when it still needs more. You can undo the last scan. You can edit overlay text without scanning again.
+- Before publish, you pick one enrollment image as the cover and you can crop it. Enrollment frames are not the public catalog.
+- You can set a price and mark a work for sale or not for sale. You can unpublish without deleting the show. Deleting a work asks you to confirm. Old visitor lists then show Removed.
+- On a desktop, open that show’s details. The menu includes Live view. Pair a screen to this show. The paired desktop stays on the live feed until you unpair it.
+- Live view is the detail of what people did: entered, looked at a work, checked it, opened review, read cost or availability, commented, showed purchase interest, shared, or failed, including why. Signed-in people appear by name. Others are Guest. No camera frames. Only the admin of that show sees it.
+- Names, emails, and the minimum analytics sit on that show’s Google Drive spreadsheet, on the signed-in user’s row. Failed attempts and the reason are visible on the admin account.
+- Export is a zip of exhibit text and public images, not the enrollment frames. Account deletion removes trays, notes, and the sign-in link within 30 days.
 
-- PWA: Vite + React, installable, camera via `getUserMedia`.
-- Recognition: hybrid. WebXR image tracking where the browser supports it, otherwise client embeddings (CLIP-class or MobileNet) matched against pgvector. Admin enrollment uses tap-to-mask plus extra angles.
-- Data: Postgres + pgvector + object storage. Supabase is the default candidate because it covers auth, storage, and vectors.
-- Auth: Google via the auth provider. X via OAuth 2.0 PKCE. First signed-in user can become admin only if we confirm that rule.
-- Deploy: undecided. Repo only until answers land.
+## What this pass is not
 
-## Layout
+- Not a native iOS or Android app.
+- Not a kiosk mode, and not a multi-room map. One exhibit is one room.
+- Not a public comment thread for people who are not signed in.
+- Not a place that stores raw camera frames.
 
-```
-docs/QUESTIONS.md      50 open questions
-docs/ARCHITECTURE.md   proposed flows and components
-docs/SCHEMA.md         draft tables
-```
+## In this repo
 
-## License
+- [docs/DECISIONS.md](docs/DECISIONS.md) — locked answers
+- [docs/LIVE.md](docs/LIVE.md) — paired desktop live view
+- [docs/OVERLAY.md](docs/OVERLAY.md) — checkbox under the artwork
+- [prototype/index.html](prototype/index.html) — visitor select and review tray
+- [prototype/admin-live.html](prototype/admin-live.html) — desktop Live view
 
-Unspecified until question 49 is answered. Do not treat this repository as licensed for reuse yet.
+License is not set. Do not treat this repository as reusable until that is decided.
